@@ -1,10 +1,10 @@
 ## Interface: 30300
 ## Title: Fishing Buddy
 ## Version: 0.9.8p1
-## Notes: Help with fishing related tasks -- clothing, fish information, etc.
-## Notes-deDE: Erleichtert das Angeln - Ausr\195\188stung und Fish-Infos
-## Notes-frFR: Vous facilite la vie de pecheur. Informations sur les poissons, changement d'habits, etc.
-## Notes-esES: Ayude con las tareas relacionadas pesca -- ropa, informaci\195\179n de los pescados 
+## Notes: |@Version: 1@|Help with fishing related tasks -- clothing, fish information, etc.
+## Notes-deDE: |@Version: 1@|Erleichtert das Angeln - Ausr\195\188stung und Fish-Infos
+## Notes-frFR: |@Version: 1@|Vous facilite la vie de pecheur. Informations sur les poissons, changement d'habits, etc.
+## Notes-esES: |@Version: 1@|Ayude con las tareas relacionadas pesca -- ropa, informaci\195\179n de los pescados
 ## Author: Sutorix=AT=hotmail.com
 ## OptionalDeps: FB_Debugging, Outfitter, myAddOns, Titan, InfoBar
 ## SavedVariables: FishingBuddy_Info

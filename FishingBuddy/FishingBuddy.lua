@@ -482,7 +482,7 @@ local function RunHandlers(what, ...)
 end
 FishingBuddy.RunHandlers = RunHandlers;
 
--- we 
+-- we
 handlerframe:SetScript("OnEvent", function(self, event, ...)
    RunHandlers(event, ...);
    RunHandlers("*", ...);
@@ -497,7 +497,7 @@ FishingBuddy.LastTooltipText = LastTooltipText;
 local function ClearTooltipText()
    FL:ClearLastTooltipText();
 end
-FishingBuddy.ClearTooltipText = ClearTooltipText; 
+FishingBuddy.ClearTooltipText = ClearTooltipText;
 
 -- build a list of zones where a given fish can be found
 local function FishZoneList(fishid)
@@ -995,7 +995,7 @@ end
 
 local function InvokeFishing()
    local _, name = FL:GetFishingSkillInfo();
-   local findid = FL:GetFishingActionBarID();   
+   local findid = FL:GetFishingActionBarID();
    if ( not FishingBuddy.GetSettingBool("UseAction") or findid == nil ) then
      FB_FishingButton:SetAttribute("type", "spell");
      FB_FishingButton:SetAttribute("spell", name);
@@ -1029,7 +1029,7 @@ local function FindNextLure(b, state)
       if ( lureinventory[s] ) then
          local startTime, _, _ = GetItemCooldown(lureinventory[s].id);
          if ( startTime == 0 ) then
-            if ( not b or lureinventory[s].b > b ) then 
+            if ( not b or lureinventory[s].b > b ) then
                return s;
             end
          end
@@ -1067,7 +1067,7 @@ local function FindBestLure(b, state)
                local startTime, _, _ = GetItemCooldown(lureinventory[s].id);
                local bonus = lureinventory[s].b;
                if ( startTime == 0 and level <= (skill + bonus) ) then
-                  if ( not b or bonus > b ) then 
+                  if ( not b or bonus > b ) then
                      return s;
                   end
                end
@@ -1446,7 +1446,7 @@ end
 
 local function TrapWorldMouse()
    if ( WorldFrame.OnMouseDown ) then
-      hooksecurefunc(WorldFrame, "OnMouseDown", WF_OnMouseDown) 
+      hooksecurefunc(WorldFrame, "OnMouseDown", WF_OnMouseDown)
    else
       SavedWFOnMouseDown = SafeHookScript(WorldFrame, "OnMouseDown", WF_OnMouseDown);
    end
@@ -1662,7 +1662,7 @@ FishingBuddy.OnEvent = function(self, event, ...)
       FishingBuddy.OptionsFrame.HandleOptions(name, "Interface\\Icons\\INV_Fishingpole_02", CastingOptions);
       FishingBuddy.OptionsFrame.HandleOptions(nil, nil, InvisibleOptions);
       FishingBuddy.OptionsUpdate();
-      
+
       self:UnregisterEvent("VARIABLES_LOADED");
    elseif ( event == "PLAYER_ENTERING_WORLD" ) then
       IsZoning = nil;
@@ -1690,7 +1690,7 @@ FishingBuddy.OnLoad = function(self)
    self:RegisterEvent("PLAYER_LOGOUT");
    self:RegisterEvent("SPELLS_CHANGED");
    self:RegisterEvent("VARIABLES_LOADED");
-   
+
    -- Handle item lock separately to reduce churn during world load
    -- self:RegisterEvent("ITEM_LOCK_CHANGED");
    -- self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
@@ -1705,7 +1705,7 @@ FishingBuddy.OnLoad = function(self)
    SlashCmdList["fishingbuddy"] = FishingBuddy.Command;
    SLASH_fishingbuddy1 = "/fishingbuddy";
    SLASH_fishingbuddy2 = "/fb";
-   
+
    FishingBuddy.Output(FBConstants.WINDOW_TITLE.." loaded");
 end
 
@@ -1754,7 +1754,7 @@ FishingBuddy.EnhanceFishingSounds = function(enhance)
          local mu = tonumber(GetCVar("Sound_MusicVolume"));
          local av = tonumber(GetCVar("Sound_AmbienceVolume"));
          local sv = tonumber(GetCVar("Sound_SFXVolume"));
-         local sb = tonumber(GetCVar("Sound_EnableSoundWhenGameIsInBG")); 
+         local sb = tonumber(GetCVar("Sound_EnableSoundWhenGameIsInBG"));
 
          if ( not efsv ) then
          -- collect the current value

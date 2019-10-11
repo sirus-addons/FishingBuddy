@@ -24,7 +24,7 @@ local zmex = FishingBuddy.ZoneMarkerEx;
 --                   level
 --           expanded
 --     collapsible
---         
+--
 -- number * 1000
 --     negative --> zone marker
 --     positive --> fish
@@ -344,7 +344,7 @@ local function UpdateLocLine(id, line, leveloffset, c, e, text, texture)
       icontex:Hide();
       icon:Hide();
    end
-   
+
    local textfield = getglobal("FishingLocations"..id.."NormalText");
    if ( textfield ~= nil ) then
        textfield:SetPoint("LEFT", offset, 0);
@@ -499,7 +499,7 @@ FishingBuddy.Locations.Update = function(self, forced)
                         text = BZ[zone];
                      end
                      tinsert(locButton.tooltip, loczone);
-                     local subsorted = FishingBuddy.SortedByZone[zone];
+                     local subsorted = FishingBuddy.SortedByZone[zone] or {};
                      local subcount = table.getn(subsorted);
                      local ins = {};
                      for s=1,subcount,1 do
@@ -627,7 +627,7 @@ function FishingLocationsCollapseAllButton_OnClick()
       FishingLocsScrollFrameScrollBar:SetValue(0);
       LocationLineSelected = 1;
    end
-   
+
    for j=1,table.getn(LocationLines) do
       local check = LocationLines[j];
       if ( check ~= 0 ) then

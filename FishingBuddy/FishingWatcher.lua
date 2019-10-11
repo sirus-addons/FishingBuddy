@@ -75,7 +75,7 @@ end
 
 local function PanelTemplates_TabResize_Copy(tab, padding, absoluteSize, maxWidth, absoluteTextSize)
 	local tabName = tab:GetName();
-	
+
 	local buttonMiddle = getglobal(tabName.."Middle");
 	local buttonMiddleDisabled = getglobal(tabName.."MiddleDisabled");
 	local sideWidths = 2 * getglobal(tabName.."Left"):GetWidth();
@@ -117,14 +117,14 @@ local function PanelTemplates_TabResize_Copy(tab, padding, absoluteSize, maxWidt
 		end
 		tabWidth = width + sideWidths;
 	end
-	
+
 	if ( buttonMiddle ) then
 		buttonMiddle:SetWidth(width);
 	end
 	if ( buttonMiddleDisabled ) then
 		buttonMiddleDisabled:SetWidth(width);
 	end
-	
+
 	tab:SetWidth(tabWidth);
 	local highlightTexture = getglobal(tabName.."HighlightTexture");
 	if ( highlightTexture ) then
@@ -254,7 +254,7 @@ WatchEvents["VARIABLES_LOADED"] = function()
    -- Make everything draw at least once
    ShowDraggerFrame();
    HideDraggerFrame();
-   
+
    FishingBuddy.OptionsFrame.HandleOptions("Watcher", "Interface\\Icons\\INV_Misc_Fish_02", WatcherOptions);
 end
 
@@ -271,34 +271,37 @@ WatchEvents[FBConstants.LEAVING_EVT] = function()
    FishingBuddy.SetSetting("TotalTimeFishing", TotalTimeFishing + ZoneFishingTime);
 end
 
--- fix old data
-local function UpdateUnknownZone(zone, subzone, zidx, sidx)
-   local uzidx = FishingBuddy.GetZoneIndex(UNKNOWN);
-   if ( uzidx ) then
-      local fh = FishingBuddy.FishingHoles;
-      local uidx = zmto(uzidx,0);
-      local count = FishingBuddy.SubZones[uidx];
-      if ( count ) then
-         for s=1,count,1 do
-            uidx = zmto(uzidx, s);
-            if ( fh[uidx] ) then
-               local uszone = FishingBuddy.SubZones[uidx];
-               if ( uszone == subzone ) then
-                  for k,v in pairs(fh[uidx]) do
-                     if ( fh[sidx][k] ) then
-                        fh[sidx][k] = fh[sidx][k] + v;
-                     else
-                        fh[sidx][k] = v;
-                     end
-                  end
-                  for k,_ in pairs(fh[uidx]) do
-                     fh[uidx][k] = nil;
-                  end
-               end
-            end
-         end
-      end
-   end
+local function UpdateUnknownZones(zone, subzone)
+   if ( FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN] ) then
+      if ( FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] ) then
+        if ( not FishingBuddy_Info["FishingHoles"][zone] ) then
+           FishingBuddy_Info["FishingHoles"][zone] = { };
+           tinsert(FishingBuddy.SortedZones, zone);
+           table.sort(FishingBuddy.SortedZones);
+        end
+        if ( not FishingBuddy_Info["FishingHoles"][zone][subzone] ) then
+           FishingBuddy_Info["FishingHoles"][zone][subzone] = { };
+        end
+        for k,v in FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] do
+           FishingBuddy_Info["FishingHoles"][zone][subzone][k] = v;
+        end
+        FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] = nil;
+     end
+     FishingBuddy.Locations.DataChanged(zone, subzone);
+      -- Duh, table.getn doesn't work because there aren't any integer
+      -- keys in this table
+      if ( next(FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN]) == nil ) then
+        FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN] = nil;
+        local pos;
+        while ( pos < table.getn(FishingBuddy.SortedZones) ) do
+           if ( FishingBuddy.SortedZones[pos] == FishingBuddy.UNKNOWN ) then
+              break;
+           end
+           pos = pos + 1;
+        end
+        tremove(FishingBuddy.SortedZones, pos);
+     end
+  end
 end
 
 local function Fix0(i)
@@ -360,7 +363,7 @@ local function WatchUpdate(justTime)
 
    local zidx, sidx = FishingBuddy.AddZoneIndex(zone, subzone);
 
-   UpdateUnknownZone(zone, subzone, zidx, sidx);
+   UpdateUnknownZones(zone, subzone);
 
    if ( noshow ) then
       HideDraggerFrame();
@@ -405,7 +408,7 @@ local function WatchUpdate(justTime)
    else
       FishingBuddy_WatchTimeFrame:Hide();
    end
-   
+
    local skill, mods, skillmax = FL:GetCurrentSkill();
    local zoneskill, playerskill = FL:GetFishingSkillLine(false, true);
    local totskill = skill + mods;
@@ -518,7 +521,7 @@ local function WatchUpdate(justTime)
    end
    SetEntry(index, line);
    index = index + 1;
-   
+
    local white = "|cff"..Crayon.COLOR_HEX_WHITE;
    local silver = "|cff"..Crayon.COLOR_HEX_SILVER;
    for j=1,table.getn(fishsort),1 do
