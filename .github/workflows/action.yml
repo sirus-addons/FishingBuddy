@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build project # This would actually build your project, using zip for an example artifact
+      - uses: actions/checkout@v2
         run: zip -r "${{ github.event.repository.name }}" . -x *.git* README.md -x addon-meta.yml -x .travis.yml -x .github/*
       - name: Create Release
         id: create_release
