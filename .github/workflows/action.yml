@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get current date for release
-        id: tag_date
+        id: release_date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%m')"
       - name: Get current date for tag
-        id: release_date
+        id: tag_date
         run: echo "::set-output name=date::$(date +'%Y%m%d%H%m')"
       - uses: actions/checkout@v2
       - name: Set short sha
