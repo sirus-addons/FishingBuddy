@@ -42,3 +42,5 @@ Installation
 1. Unzip the 'FishingBuddyVERSION.zip' file
 2. If your unzip program allows you to specify a location, then unzip it into the 'Interface/AddOns' folder contained in your WoW folder (the location that WoW was installed)
 3. If your unzip program doesn't let you specify the destination, then find your WoW folder (where it was installed) and drag the 'FishingBuddy' folder into the 'Interface/AddOns' folder.
+
+test
