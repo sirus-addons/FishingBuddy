@@ -3,18 +3,14 @@ Name: LibTourist-3.0
 Revision: $Rev: 98 $
 Author(s): ckknight (ckknight@gmail.com), Arrowmaster
 Website: http://ckknight.wowinterface.com/
-Documentation: http://www.wowace.com/addons/libtourist-3-0/
 SVN: svn://svn.wowace.com/wow/libtourist-3-0/mainline/trunk
 Description: A library to provide information about zones and instances.
 Dependencies: LibBabble-Zone-3.0
 License: MIT
-
-Note:
-Some WOTLK data is unconfirmed / incomplete
 ]]
 
 local MAJOR_VERSION = "LibTourist-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 98 $"):match("(%d+)"))
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 100 $"):match("(%d+)"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 if not LibStub("LibBabble-Zone-3.0") then error(MAJOR_VERSION .. " requires LibBabble-Zone-3.0.") end
@@ -31,14 +27,27 @@ if oldLib then
 	end
 end
 
+local function trace(msg)
+--	DEFAULT_CHAT_FRAME:AddMessage("[LT] "..tostring(msg))
+end
+
 local BZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
 local BZR = LibStub("LibBabble-Zone-3.0"):GetReverseLookupTable()
 
 local playerLevel = 1
 local _,race = UnitRace("player")
-local isHorde = (race == "Orc" or race == "Troll" or race == "Tauren" or race == "Scourge" or race == "BloodElf")
+
+local isAlliance, isHorde, isNeutral
+do
+	local faction = UnitFactionGroup("player")
+	isAlliance = faction == "Alliance"
+	isHorde = faction == "Horde"
+	isNeutral = not isAlliance and not isHorde
+end
+
 local isWestern = GetLocale() == "enUS" or GetLocale() == "deDE" or GetLocale() == "frFR" or GetLocale() == "esES"
 
+-- Continents
 local Kalimdor, Eastern_Kingdoms, Outland, Northrend = GetMapContinents()
 if not Outland then
 	Outland = "Outland"
@@ -89,7 +98,7 @@ local fishing = {}
 local cost = {}
 local textures = {}
 local textures_rev = {}
-local complexes = {}
+local complexOfInstance = {}
 local entrancePortals_zone = {}
 local entrancePortals_x = {}
 local entrancePortals_y = {}
@@ -207,16 +216,21 @@ function Tourist:GetLevelColor(zone)
 	end
 end
 
+-- Returns an r, g and b value representing a color, depending on the given zone and the current character's faction.
 function Tourist:GetFactionColor(zone)
 	if factions[zone] == (isHorde and "Alliance" or "Horde") then
+		-- Red
 		return 1, 0, 0
 	elseif factions[zone] == (isHorde and "Horde" or "Alliance") then
+		-- Green
 		return 0, 1, 0
 	else
+		-- Yellow
 		return 1, 1, 0
 	end
 end
 
+-- Returns the width and height of a zone map in game yards. The height is always 2/3 of the width.
 function Tourist:GetZoneYardSize(zone)
 	return yardWidths[zone], yardHeights[zone]
 end
@@ -454,7 +468,10 @@ function Tourist:GetBestZoneCoordinate(x, y, zone)
 	return best_x, best_y, best_zone
 end
 
-local function retNil() return nil end
+local function retNil()
+	return nil
+end
+
 local function retOne(object, state)
 	if state == object then
 		return nil
@@ -474,8 +491,10 @@ local function mysort(a,b)
 		return true
 	else
 		local aval, bval = groupSizes[a], groupSizes[b]
-		if aval ~= bval then
-			return aval < bval
+		if aval and bval then
+			if aval ~= bval then
+				return aval < bval
+			end
 		end
 		aval, bval = lows[a], lows[b]
 		if aval ~= bval then
@@ -553,7 +572,7 @@ local function initZonesInstances()
 			end
 		end
 	end
-	initZonesInstances = nil
+	initZonesInstances = nil  -- Set function to nil so initialisation is done only once (and just in time)
 end
 
 function Tourist:IterateZonesAndInstances()
@@ -565,7 +584,7 @@ end
 
 local function zoneIter(_, position)
 	local k = next(zonesInstances, position)
-	while k ~= nil and (types[k] == "Instance" or types[k] == "Battleground") do
+	while k ~= nil and (types[k] == "Instance" or types[k] == "Battleground" or types[k] == "Arena") do
 		k = next(zonesInstances, k)
 	end
 	return k
@@ -579,7 +598,7 @@ end
 
 local function instanceIter(_, position)
 	local k = next(zonesInstances, position)
-	while k ~= nil and (types[k] ~= "Instance" and types[k] ~= "Battleground") do
+	while k ~= nil and (types[k] ~= "Instance" and types[k] ~= "Battleground" and types[k] ~= "Arena") do
 		k = next(zonesInstances, k)
 	end
 	return k
@@ -739,16 +758,16 @@ end
 
 function Tourist:IsInstance(zone)
 	local t = types[zone]
-	return t == "Instance" or t == "Battleground"
+	return t == "Instance" or t == "Battleground" or t == "Arena"
 end
 
 function Tourist:IsZone(zone)
 	local t = types[zone]
-	return t ~= "Instance" and t ~= "Battleground" and t ~= "Transport"
+	return t and  t ~= "Instance" and t ~= "Battleground" and t ~= "Transport" and t ~= "Arena"
 end
 
 function Tourist:GetComplex(zone)
-	return complexes[zone]
+	return complexOfInstance[zone]
 end
 
 function Tourist:IsZoneOrInstance(zone)
@@ -850,7 +869,7 @@ function Tourist:GetEntrancePortalLocation(instance)
 	return entrancePortals_zone[instance], entrancePortals_x[instance], entrancePortals_y[instance]
 end
 
-local inf = 1/0
+local inf = math.huge
 local stack = setmetatable({}, {__mode='k'})
 local function iterator(S)
 	local position = S['#'] - 1
@@ -870,21 +889,26 @@ setmetatable(cost, {
 	__index = function(self, vertex)
 		local price = 1
 
+		-- Take player level into account, compared to zone minimum level
 		if lows[vertex] > playerLevel then
 			price = price * (1 + math.ceil((lows[vertex] - playerLevel) / 6))
 		end
 
 		if factions[vertex] == (isHorde and "Horde" or "Alliance") then
+			-- Friendly: 50% off
 			price = price / 2
 		elseif factions[vertex] == (isHorde and "Alliance" or "Horde") then
 			if types[vertex] == "City" then
+					-- Very dangerous
 				price = price * 10
 			else
+					-- Less dangerous
 				price = price * 3
 			end
 		end
 
-		if types[x] == "Transport" then
+		if types[vertex] == "Transport" then
+			-- Not sure why transports should be more expensive than road connections (to be tuned?)
 			price = price * 2
 		end
 
@@ -893,8 +917,16 @@ setmetatable(cost, {
 	end
 })
 
+-- This function tries to calculate the most optimal path between alpha and bravo 
+-- by foot or ground mount, that is, without using a flying mount or a taxi service (with a few exceptions). 
+-- The return value is an iteration that gives a travel advice in the form of a list 
+-- of zones, transports and portals to follow in order to get from alpha to bravo. 
+-- The function tries to avoid hostile zones by calculating a "price" for each possible 
+-- route. The price calculation takes zone level, faction and type into account.
+-- See metatable above for the 'pricing' mechanism.
 function Tourist:IteratePath(alpha, bravo)
 	if paths[alpha] == nil or paths[bravo] == nil then
+		-- departure zone and destination zone must both have at least one path
 		return retNil
 	end
 
@@ -907,48 +939,85 @@ function Tourist:IteratePath(alpha, bravo)
 	local pi = next(stack) or {}
 	stack[pi] = nil
 
-	for vertex, v in pairs(paths) do
-		d[vertex] = inf
-		Q[vertex] = v
+	for vertex, v in pairs(paths) do  -- for each zone with at least one path
+		d[vertex] = inf -- add to price stack: d[<zone>] = price of the route to get to that zone from alpha, initially infinite
+		Q[vertex] = v   -- add to zone stack:  Q[<zone>] = <path collection>, contains all zones that have one or more paths
 	end
-	d[alpha] = 0
+	d[alpha] = 0  -- price for departure zone = 0 (no costs to get there)
 
-	while next(Q) do
-		local u
-		local min = inf
-		for z in pairs(Q) do
-			local value = d[z]
-			if value < min then
-				min = value
-				u = z
+	while next(Q) do   		-- do this for each zone as long as there are zones present in the zone stack
+		local u  			-- this will hold the zone name with the lowest price
+		local min = inf		-- this will hold the lowest price that has been found while searching; initially infinite
+		for z in pairs(Q) do   		-- for each zone currently present in the zone stack
+			local value = d[z]		-- get price for the route to get to that zone (see note below)
+			if value < min then		-- compare to find the zone with the lowest price. If a lower price is found:
+				min = value				-- remember lowest route price so far
+				u = z					-- remember the zone with the lowest route price so far
 			end
 		end
 		if min == inf then
-			return retNil
+			return retNil  -- no zone found for which a price has been determined -> exit and return nil (no path possible between alpha and bravo)
 		end
-		Q[u] = nil
+		Q[u] = nil  -- remove the zone that came up as cheapest from the stack so it won't be used twice
 		if u == bravo then
-			break
+			break 	-- we have reached our destination zone; stop searching by exiting the 'while next(Q)' loop
 		end
 
-		local adj = paths[u]
-		if type(adj) == "table" then
-			local d_u = d[u]
-			for v in pairs(adj) do
-				local c = d_u + cost[v]
-				if d[v] > c then
-					d[v] = c
-					pi[v] = u
+
+		-- The very first cycle will result in the departure zone being the cheapest to go to. This zone has price 0, while all other zones are still
+		-- priced 'infinite' at this point. The departure zone will then be picked up for processing of its connections (paths).
+		--
+		-- Each zone that has been processed will be removed from the stack. The departure zone will therefore be the first zone to be removed.
+		-- Because every cycle the a zone with the lowest available price is processed, the remaining zones in the stack will always have an equal or 
+		-- higher price (if not inifinite).
+		--
+		-- In subsequent cycles, prices will be calculated and set for other zones, causing them to be picked up for processing eventually in later cycles.
+		-- The price reflects the costs to reach that zone, originating from the departure zone.
+		--
+		-- Only zones will be priced, that have a connection with the zone that is being processed (starting with the departure zone).
+		-- Prices are only registered when they are lower than the registered price. When this happens the registered price is always 'infinite'.
+		-- Because the price of the route keeps increasing, prices are never updated once set. This ensures that the search always moves away from the 
+		-- departure zone, like an oil stain.
+		-- 
+		-- At some point the destination zone will be priced too, if it comes up during the search.
+		--
+		-- When eventually the destination zone is picked as cheapest one left in the stack, this means that:
+		--   a) there is a route between departure and destination, because the destination zone has been priced
+		--   b) this route is made up out of the cheapest connections available
+		-- As a result, there is no need to continue the search because every other option would be more expensive.
+
+
+		-- process the path connections of the found zone
+		local adj = paths[u]  			-- get the path connections of the zone being processed (adj = adjecent?)
+		if type(adj) == "table" then	-- multiple paths go from here
+			local d_u = d[u]			-- current route price: the price of the route to get to the zone being processed
+			for v in pairs(adj) do		-- for each path that goes from here
+				local c = d_u + cost[v]	-- add the price of that path to the route price
+				if d[v] > c then	-- if the currently known price of this path (initialized at infinite at the beginning) is greater than the calculated price...
+					d[v] = c		-- - update the price of the path to that zone in the collection of prices
+					pi[v] = u		-- - store or update how to get there: pi[<path zone name>] = <current zone name> 
 				end
 			end
-		elseif adj ~= false then
-			local c = d[u] + cost[adj]
-			if d[adj] > c then
-				d[adj] = c
-				pi[adj] = u
+		elseif adj ~= false then		-- one path goes from here
+			local c = d[u] + cost[adj]	-- add the price of that path to the route price
+			if d[adj] > c then			-- if the the calculated route price for this path is less than the currently known price (initialized at inf at the beginning) is greater than ...
+				d[adj] = c					-- - update the price of the path to that zone in the collection of prices
+				pi[adj] = u					-- - store or update how to get there: pi[<path zone name>] = <current zone name> 		
 			end
 		end
 	end
+
+	-- At this point, pi will contain a collection of all connections that have been priced, stored as: pi[<you should go here>] = <from here>
+	-- Amongst these are the connections that have to be used to create the cheapest route between departure and destination.
+	-- Next, the route will be extracted from the data in pi.
+	--
+	-- The loop below starts at the destination zone and works it way back to the departure zone, asking
+	-- "from which direction should I be coming when I arrive here?"
+	-- until there is no answer to that question, which will be the case for the departure zone. Technically, the departure zone 
+	-- has not been priced and is therefore not present in the collection.
+	--
+	-- The resulting sequence is stored in S[<index>] = <zone name>
+	-- The sequence appears to be reversed, starting at the destination zone (not sure why that is)
 
 	local i = 1
 	local last = bravo
@@ -958,6 +1027,7 @@ function Tourist:IteratePath(alpha, bravo)
 		last = pi[last]
 	end
 
+	-- reset the helper stacks
 	for k in pairs(pi) do
 		pi[k] = nil
 	end
@@ -971,10 +1041,11 @@ function Tourist:IteratePath(alpha, bravo)
 	stack[Q] = true
 	stack[d] = true
 
-	S['#'] = i
+	S['#'] = i  -- set the stack size of S
 
-	return iterator, S
+	return iterator, S  -- return result
 end
+
 
 local function retWithOffset(t, key)
 	while true do
@@ -988,8 +1059,11 @@ local function retWithOffset(t, key)
 	end
 end
 
+-- This returns an iteration of zone connections (paths).
+-- The second parameter determines whether other connections like transports and portals should be included
 function Tourist:IterateBorderZones(zone, zonesOnly)
 	local path = paths[zone]
+
 	if not path then
 		return retNil
 	elseif type(path) == "table" then
@@ -1001,6 +1075,11 @@ function Tourist:IterateBorderZones(zone, zonesOnly)
 		return retOne, path
 	end
 end
+
+
+--------------------------------------------------------------------------------------------------------
+--                                            Main code                                               --
+--------------------------------------------------------------------------------------------------------
 
 do
 	Tourist.frame = oldLib and oldLib.frame or CreateFrame("Frame", MAJOR_VERSION .. "Frame", UIParent)
@@ -1047,6 +1126,8 @@ do
 	local DALARAN_COT_PORTAL = string.format(X_Y_PORTAL, BZ["Dalaran"], BZ["Caverns of Time"])
 
 	local zones = {}
+
+	-- CONTINENTS ---------------------------------------------------------------
 
 	zones[BZ["Eastern Kingdoms"]] = {
 		type = "Continent",
@@ -3162,8 +3243,12 @@ do
 		fishing_min = 455,
 	}
 
-	zones[BZ["Hrothgar's Landing"]] = { -- TODO
+	zones[BZ["Hrothgar's Landing"]] = {
+		low = 77,
+		high = 80,
+		paths = BZ["Icecrown"],
 		continent = Northrend,
+		fishing_min = 455,
 	}
 
 	zones[BZ["Wintergrasp"]] = {
@@ -3256,6 +3341,7 @@ do
 		groupSize = 10,
 		altGroupSize = 25,
 		type = "Instance",
+		fishing_min = 1,  -- acid
 		entrancePortal = { BZ["Dragonblight"], 87.30, 51.00 },
 	}
 
@@ -3267,6 +3353,7 @@ do
 		groupSize = 10,
 		altGroupSize = 25,
 		type = "Instance",
+		fishing_min = 1,  -- lava
 		entrancePortal = { BZ["Dragonblight"], 60.00, 57.00 },
 	}
 
@@ -3290,6 +3377,7 @@ do
 		paths = BZ["Zul'Drak"],
 		groupSize = 5,
 		type = "Instance",
+		fishing_min = 430,
 		entrancePortal = { BZ["Zul'Drak"], 76.14, 21.00 },
 	}
 
@@ -3373,6 +3461,7 @@ do
 		paths = BZ["Icecrown"],
 		groupSize = 5,
 		type = "Instance",
+		fishing_min = 455,
 		entrancePortal = { BZ["Icecrown"], 52.60, 89.35 },
 	}
 
@@ -3441,47 +3530,67 @@ do
 		type = "Arena",
 	}
 
+	trace("Tourist: Initializing continents...")
 	local continentNames = { GetMapContinents() }
 	local doneZones = {}
-	for continentID, continentName in ipairs(continentNames) do
+
+	for continentID, continentName in pairs(continentNames) do
 		SetMapZoom(continentID)
 		if zones[continentName] then
+			-- Get map art
 			zones[continentName].texture = GetMapInfo()
 		end
 		local zoneNames = { GetMapZones(continentID) }
-		local continentYards = zones[continentName].yards
-		for _ = 1, #zoneNames do
-			local x, y
-			local name, fileName, texPctX, texPctY, texX, texY, scrollX, scrollY
-			local finish = GetTime() + 0.1
-			repeat
-				if finish < GetTime() then
-					name = nil
-					break
+		if zones[continentName] then
+			local continentYards = zones[continentName].yards
+			for _ = 1, #zoneNames do
+				local x, y
+				local name, fileName, texPctX, texPctY, texX, texY, scrollX, scrollY
+				-- Search the map
+				local finish = GetTime() + 0.1
+				repeat
+					if finish < GetTime() then
+						-- Timeout
+						name = nil
+						break
+					end
+					x, y = math.random(), math.random()
+					name, fileName, texPctX, texPctY, texX, texY, scrollX, scrollY = UpdateMapHighlight(x, y)
+				until name and not doneZones[name]
+				if name then
+					if fileName then
+						doneZones[name] = true
+			
+						if fileName == "EversongWoods" or fileName == "Ghostlands" or fileName == "Sunwell" or fileName == "SilvermoonCity" then
+							scrollX = scrollX - 0.00168
+							scrollY = scrollY + 0.01
+						end
+			
+						if zones[name] then
+							zones[name].yards = texX * continentYards
+							zones[name].x_offset = scrollX * continentYards
+							zones[name].y_offset = scrollY * continentYards * 2/3
+							zones[name].texture = fileName
+						else
+							trace("! Tourist: TODO: "..tostring(name))
+						end
+					else
+						-- UpdateMapHighlight() returned the zone name but did NOT return data for the texture
+						trace("! Tourist: No texture data from UpdateMapHighlight for "..tostring(name))
+					end
+				else
+					-- UpdateMapHighlight did not return anything
+					-- See hack, above					
+					trace("! Tourist: Highlight not found for "..tostring(continentName).."["..tostring(_).."] = "..tostring(zoneNames[_]))
 				end
-				x, y = math.random(), math.random()
-				name, fileName, texPctX, texPctY, texX, texY, scrollX, scrollY = UpdateMapHighlight(x, y)
-			until name and not doneZones[name]
-			if name == nil then
-				break
 			end
-			doneZones[name] = true
-
-			if fileName == "EversongWoods" or fileName == "Ghostlands" or fileName == "Sunwell" or fileName == "SilvermoonCity" then
-				scrollX = scrollX - 0.00168
-				scrollY = scrollY + 0.01
-			end
-
-			if zones[name] then
-				zones[name].yards = texX * continentYards
-				zones[name].x_offset = scrollX * continentYards
-				zones[name].y_offset = scrollY * continentYards * 2/3
-				zones[name].texture = fileName
-			end
+		else
+			trace("! Tourist: Continent not found "..tostring(continentName))
 		end
 	end
 	SetMapToCurrentZone()
 
+	-- Fill the lookup tables
 	for k,v in pairs(zones) do
 		lows[k] = v.low or 0
 		highs[k] = v.high or 0
@@ -3498,7 +3607,7 @@ do
 		yardYOffsets[k] = v.y_offset
 		fishing[k] = v.fishing_min
 		textures[k] = v.texture
-		complexes[k] = v.complex
+		complexOfInstance[k] = v.complex
 		if v.texture then
 			textures_rev[v.texture] = k
 		end
@@ -3509,6 +3618,8 @@ do
 		end
 	end
 	zones = nil
+
+	trace("Tourist: Initialized.")
 
 	PLAYER_LEVEL_UP(Tourist)
 end

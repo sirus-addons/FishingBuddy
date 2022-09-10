@@ -142,6 +142,12 @@ local function getContPosition( zoneData, z, x, y )
 	return x, y;
 end
 
+local function printError( ... )
+	if ( ASTROLABE_VERBOSE) then
+		print(...)
+	end
+end
+
 
 --------------------------------------------------------------------------------------------------------------
 -- General Utility Functions
@@ -495,7 +501,7 @@ function Astrolabe:PlaceIconOnMinimap( icon, continent, zone, xPos, yPos )
 	minimapShape = GetMinimapShape and ValidMinimapShapes[GetMinimapShape()];
 	
 	-- place the icon on the Minimap and :Show() it
-	local map = Minimap
+	local map = self.Minimap
 	placeIconOnMinimap(map, map:GetZoom(), map:GetWidth(), map:GetHeight(), icon, dist, xDist, yDist);
 	icon:Show()
 	
@@ -561,7 +567,7 @@ do
 			
 			local C, Z, x, y = self:GetCurrentPlayerPosition();
 			if ( C and C >= 0 ) then
-				local Minimap = Minimap;
+				local Minimap = Astrolabe.Minimap;
 				local lastPosition = self.LastPlayerPosition;
 				local lC, lZ, lx, ly = unpack(lastPosition);
 				
@@ -690,6 +696,7 @@ do
 			
 			local C, Z, x, y = self:GetCurrentPlayerPosition();
 			if ( C and C >= 0 ) then
+				local Minimap = self.Minimap;
 				minimapRotationEnabled = GetCVar("rotateMinimap") ~= "0"
 				if ( minimapRotationEnabled ) then
 					minimapRotationOffset = GetPlayerFacing();
@@ -703,7 +710,6 @@ do
 				
 				local currentZoom = Minimap:GetZoom();
 				lastZoom = currentZoom;
-				local Minimap = Minimap;
 				local mapWidth = Minimap:GetWidth();
 				local mapHeight = Minimap:GetHeight();
 				local count = 0
@@ -862,7 +868,7 @@ end
 function Astrolabe:OnEvent( frame, event )
 	if ( event == "MINIMAP_UPDATE_ZOOM" ) then
 		-- update minimap zoom scale
-		local Minimap = Minimap;
+		local Minimap = self.Minimap;
 		local curZoom = Minimap:GetZoom();
 		if ( GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") ) then
 			if ( curZoom < 2 ) then
@@ -965,6 +971,10 @@ end
 
 local function activate( newInstance, oldInstance )
 	if ( oldInstance ) then -- this is an upgrade activate
+		-- print upgrade debug info
+		local _, oldVersion = oldInstance:GetVersion();
+		printError("Upgrading "..LIBRARY_VERSION_MAJOR.." from version "..oldVersion.." to version "..LIBRARY_VERSION_MINOR);
+
 		if ( oldInstance.DumpNewIconsCache ) then
 			oldInstance:DumpNewIconsCache()
 		end
@@ -980,8 +990,12 @@ local function activate( newInstance, oldInstance )
 		end
 		newInstance.MinimapIconCount = iconCount
 		
+		-- explicity carry over our Minimap reference, or create it if we don't already have one
+		newInstance.Minimap = oldInstance.Minimap or _G.Minimap
+
 		Astrolabe = oldInstance;
 	else
+		newInstance.Minimap = _G.Minimap
 		local frame = CreateFrame("Frame");
 		newInstance.processingFrame = frame;
 		
@@ -999,7 +1013,7 @@ local function activate( newInstance, oldInstance )
 	
 	local frame = newInstance.processingFrame;
 	frame:Hide();
-	frame:SetParent("Minimap");
+	frame:SetParent(Minimap);
 	frame:UnregisterAllEvents();
 	frame:RegisterEvent("MINIMAP_UPDATE_ZOOM");
 	frame:RegisterEvent("PLAYER_LEAVING_WORLD");
@@ -1571,7 +1585,7 @@ for continent, zones in pairs(Astrolabe.ContinentList) do
 	for index, mapName in pairs(zones) do
 		if not ( mapData.zoneData[mapName] ) then
 			--WE HAVE A PROBLEM!!!
-			ChatFrame1:AddMessage("Astrolabe is missing data for "..select(index, GetMapZones(continent))..".");
+			printError("Astrolabe is missing data for "..select(index, GetMapZones(continent))..".");
 			mapData.zoneData[mapName] = zeroData;
 		end
 		mapData[index] = mapData.zoneData[mapName];
