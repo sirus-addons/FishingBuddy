@@ -61,7 +61,7 @@ FishingInit.copytable = copytable;
 FishingInit.CopyFishingHoles = function()
    local sorted = FishingBuddy.SortedZones;
    local zonecount = table.getn(sorted);
-   
+
    local fh = {};
    local fbfh = FishingBuddy_Info[GetLocale()]["FishingHoles"];
    for i=1,zonecount,1 do
@@ -91,7 +91,7 @@ FishingInit.CopyFishingHoles = function()
 end
 
 FishingInit.CopyFishSchools = function()
-   schools = {};
+   local schools = {};
    if ( FishingBuddy_Info["FishSchools"] ) then
       for zidx,holes in pairs(FishingBuddy_Info["FishSchools"]) do
          local zone = FishingBuddy_Info["ZoneIndex"][zidx];
@@ -214,7 +214,7 @@ FishingInit.ResetZones = function(zones, loc)
    local totals = copytable(FishingBuddy_Info[loc]["FishTotals"], 0);
    local skills = copytable(FishingBuddy_Info[loc]["FishingSkill"], 0);
    local holes = copytable(FishingBuddy_Info[loc]["FishingHoles"], 0);
-   
+
    FishingBuddy_Info[loc] = {};
    FishingBuddy_Info[loc]["SubZones"] = {};
    FishingBuddy_Info[loc]["FishTotals"] = {};
@@ -298,7 +298,7 @@ FishingInit.UpdateFishingDB = function()
          end
       end
    end
-   
+
    if ( version < 9701 ) then
       if ( FishingBuddy_Player["Settings"]["ClickToSwitch"] ) then
          FishingBuddy_Player["Settings"]["ClickToSwitch"] = 1;
@@ -307,7 +307,7 @@ FishingInit.UpdateFishingDB = function()
          FishingBuddy_Player["Settings"]["MinimapClickToSwitch"] = 1;
       end
    end
-   
+
    if ( not FishingBuddy_Info["Locales"] ) then
       local locales = {};
       for k,v in pairs(FishingBuddy_Info) do
@@ -325,10 +325,10 @@ FishingInit.UpdateFishingDB = function()
       FishingBuddy_Info[loc]["FishingSkill"] = {};
       FishingBuddy_Info[loc]["FishingHoles"] = {};
    end
-   
+
    -- Use the current locale's version of SubZones
    FishingBuddy_Info["Locales"][loc] = 1;
-   
+
    if (version < 9817) then
       -- Same id, different fish :-(
       local fish = FishingBuddy_Info["Fishies"][45328];
@@ -343,7 +343,7 @@ FishingInit.UpdateFishingDB = function()
          FishingBuddy_Info["Fishies"][45328] = info;
       end
    end
-   
+
    -- look for broken ZoneIndex
    local broken = false;
    local check = {};
@@ -357,7 +357,7 @@ FishingInit.UpdateFishingDB = function()
    if ( broken ) then
       local zones = copytable(FishingBuddy_Info["ZoneIndex"]);
       FishingBuddy_Info["ZoneIndex"] = {};
-      tinsert(FishingBuddy_Info["ZoneIndex"], UNKNOWN);   
+      tinsert(FishingBuddy_Info["ZoneIndex"], UNKNOWN);
       for loc,_ in pairs(FishingBuddy_Info["Locales"]) do
           FishingInit.ResetZones(zones, loc);
       end
@@ -497,7 +497,7 @@ FishingInit.RegisterMyAddOn = function()
 end
 
 FishingInit.RegisterFunctionTraps = function()
-   temp = ToggleMinimap;
+   local temp = ToggleMinimap;
    if ( FishingInit.HookFunction("ToggleMinimap", "FishingBuddy_ToggleMinimap") ) then
       FishingBuddy.SavedToggleMinimap = temp;
    end
@@ -554,7 +554,7 @@ FishingBuddy.Initialize = function()
       FishingBuddy.WatchUpdate();
       -- debugging state
       FishingBuddy.Debugging = FishingBuddy.BaseGetSetting("FishDebug");
-      
+
       -- Casting key menu
       local f = CreateFrame("Frame", "FishingBuddyOption_EasyCastKeys", nil,
                             "FishingBuddyDropDownMenuTemplate");

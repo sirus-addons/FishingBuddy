@@ -230,7 +230,7 @@ end
 
 local function Setup(options, nomap)
    FishingOptionsFrame.groupoptions = options;
-   
+
 -- Clear out all the stuff we put on the old buttons
    for name,button in pairs(optionmap) do
       button.name = nil;
@@ -256,7 +256,7 @@ local function Setup(options, nomap)
       button:Hide();
    end
    optionmap = {};
-   
+
    local lastbutton = nil;
    local primaries = {};
    local index = 1;
@@ -624,7 +624,7 @@ end
 FishingBuddy.MakeToggle = MakeToggle;
 
 local function MakeDropDownEntry(switchText, switchSetting, keepShowing, callMe)
-   info = {};
+   local info = {};
    info.text = switchText;
    info.func = MakeToggle(switchSetting, callMe);
    info.checked = FishingBuddy.GetSettingBool(switchSetting);
@@ -634,7 +634,7 @@ end
 FishingBuddy.MakeDropDownEntry = MakeDropDownEntry;
 
 local function MakeDropDownSep()
-   info = {};
+   local info = {};
    info.disabled = 1;
    UIDropDownMenu_AddButton(info);
 end

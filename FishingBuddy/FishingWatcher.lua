@@ -12,6 +12,7 @@ local zmex = FishingBuddy.ZoneMarkerEx;
 
 local ZoneFishingTime = 0;
 local TotalTimeFishing = 0;
+local CurLoc = GetLocale();
 
 local Crayon = LibStub("LibCrayon-3.0");
 local FL = LibStub("LibFishing-1.0");
@@ -325,7 +326,7 @@ end
 local fishingWatchMaxWidth;
 local function SetEntry(index, text)
    local name = "FishingWatchLine"..index;
-   entry = getglobal(name);
+   local entry = _G[name];
    if ( not entry ) then
       local first = getglobal("FishingWatchLine1");
       entry = FishingWatchFrame:CreateFontString(name, "BACKGROUND", "FishingWatchFontTemplate");
@@ -666,8 +667,8 @@ local function WatchMenu_Initialize()
    if ( fz and fz[idx] ) then
       local ff = FishingBuddy_Info["Fishies"];
       for fishid in pairs(fz[idx]) do
-         info = {};
-         info.text = ff[fishid][loc];
+         local info = {};
+         info.text = ff[fishid][CurLoc];
          info.func = WatcherMakeToggle(fishid);
          info.checked = ( not FishingBuddy_Info["HiddenFishies"][fishid] );
          info.keepShownOnClick = 1;

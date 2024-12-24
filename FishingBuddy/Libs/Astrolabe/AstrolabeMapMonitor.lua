@@ -10,9 +10,9 @@ Documentation: http://www.esamynn.org/wiki/Astrolabe/World_Map_Monitor
 SVN: http://esamynn.org/svn/astrolabe/
 Description:
 	This is a small stub library to support the main Astrolabe
-	library.  It's purpose is to monitor the visibility of 
+	library.  It's purpose is to monitor the visibility of
 	various World Map frames, so that Astrolabe can modify its
-	behaviour accordingly.  
+	behaviour accordingly.
 
 Copyright (C) 2007 James Carrothers
 
@@ -117,7 +117,7 @@ end
 
 local function argcheck(value, num, ...)
 	assert(1, type(num) == "number",
-		"Bad argument #2 to 'argcheck' (number expected, got " .. type(level) .. ")")
+		"Bad argument #2 to 'argcheck' (number expected, got " .. type(num) .. ")")
 
 	for i=1,select("#", ...) do
 		if type(value) == select(i, ...) then return end
@@ -137,7 +137,7 @@ function AstrolabeMapMonitor:MonitorWorldMap( worldMapFrame )
 	-- check argument types
 	argcheck(worldMapFrame, 2, "table");
 	assert((worldMapFrame.SetParent), "Usage Message");
-	
+
 	local TrackedWorldMaps = self.TrackedWorldMaps;
 	if ( TrackedWorldMaps[worldMapFrame] ) then
 		return 1;
@@ -185,7 +185,7 @@ function AstrolabeMapMonitor:RegisterAstrolabeLibrary( lib, majorVersionString )
 	-- check argument types
 	argcheck(lib, 2, "table");
 	argcheck(majorVersionString, 3, "string");
-	
+
 	self.AstrolabeLibrarys[lib] = majorVersionString;
 	self:Update();
 end

@@ -917,11 +917,11 @@ setmetatable(cost, {
 	end
 })
 
--- This function tries to calculate the most optimal path between alpha and bravo 
--- by foot or ground mount, that is, without using a flying mount or a taxi service (with a few exceptions). 
--- The return value is an iteration that gives a travel advice in the form of a list 
--- of zones, transports and portals to follow in order to get from alpha to bravo. 
--- The function tries to avoid hostile zones by calculating a "price" for each possible 
+-- This function tries to calculate the most optimal path between alpha and bravo
+-- by foot or ground mount, that is, without using a flying mount or a taxi service (with a few exceptions).
+-- The return value is an iteration that gives a travel advice in the form of a list
+-- of zones, transports and portals to follow in order to get from alpha to bravo.
+-- The function tries to avoid hostile zones by calculating a "price" for each possible
 -- route. The price calculation takes zone level, faction and type into account.
 -- See metatable above for the 'pricing' mechanism.
 function Tourist:IteratePath(alpha, bravo)
@@ -968,7 +968,7 @@ function Tourist:IteratePath(alpha, bravo)
 		-- priced 'infinite' at this point. The departure zone will then be picked up for processing of its connections (paths).
 		--
 		-- Each zone that has been processed will be removed from the stack. The departure zone will therefore be the first zone to be removed.
-		-- Because every cycle the a zone with the lowest available price is processed, the remaining zones in the stack will always have an equal or 
+		-- Because every cycle the a zone with the lowest available price is processed, the remaining zones in the stack will always have an equal or
 		-- higher price (if not inifinite).
 		--
 		-- In subsequent cycles, prices will be calculated and set for other zones, causing them to be picked up for processing eventually in later cycles.
@@ -976,9 +976,9 @@ function Tourist:IteratePath(alpha, bravo)
 		--
 		-- Only zones will be priced, that have a connection with the zone that is being processed (starting with the departure zone).
 		-- Prices are only registered when they are lower than the registered price. When this happens the registered price is always 'infinite'.
-		-- Because the price of the route keeps increasing, prices are never updated once set. This ensures that the search always moves away from the 
+		-- Because the price of the route keeps increasing, prices are never updated once set. This ensures that the search always moves away from the
 		-- departure zone, like an oil stain.
-		-- 
+		--
 		-- At some point the destination zone will be priced too, if it comes up during the search.
 		--
 		-- When eventually the destination zone is picked as cheapest one left in the stack, this means that:
@@ -995,14 +995,14 @@ function Tourist:IteratePath(alpha, bravo)
 				local c = d_u + cost[v]	-- add the price of that path to the route price
 				if d[v] > c then	-- if the currently known price of this path (initialized at infinite at the beginning) is greater than the calculated price...
 					d[v] = c		-- - update the price of the path to that zone in the collection of prices
-					pi[v] = u		-- - store or update how to get there: pi[<path zone name>] = <current zone name> 
+					pi[v] = u		-- - store or update how to get there: pi[<path zone name>] = <current zone name>
 				end
 			end
 		elseif adj ~= false then		-- one path goes from here
 			local c = d[u] + cost[adj]	-- add the price of that path to the route price
 			if d[adj] > c then			-- if the the calculated route price for this path is less than the currently known price (initialized at inf at the beginning) is greater than ...
 				d[adj] = c					-- - update the price of the path to that zone in the collection of prices
-				pi[adj] = u					-- - store or update how to get there: pi[<path zone name>] = <current zone name> 		
+				pi[adj] = u					-- - store or update how to get there: pi[<path zone name>] = <current zone name>
 			end
 		end
 	end
@@ -1013,7 +1013,7 @@ function Tourist:IteratePath(alpha, bravo)
 	--
 	-- The loop below starts at the destination zone and works it way back to the departure zone, asking
 	-- "from which direction should I be coming when I arrive here?"
-	-- until there is no answer to that question, which will be the case for the departure zone. Technically, the departure zone 
+	-- until there is no answer to that question, which will be the case for the departure zone. Technically, the departure zone
 	-- has not been priced and is therefore not present in the collection.
 	--
 	-- The resulting sequence is stored in S[<index>] = <zone name>
@@ -1087,7 +1087,12 @@ do
 	Tourist.frame:RegisterEvent("PLAYER_LEVEL_UP")
 	Tourist.frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Tourist.frame:SetScript("OnEvent", function(frame, event, ...)
-		PLAYER_LEVEL_UP(Tourist, ...)
+		if event == "PLAYER_LEVEL_UP" then
+			local level = ...
+			PLAYER_LEVEL_UP(Tourist, level)
+		else
+			PLAYER_LEVEL_UP(Tourist, nil)
+		end
 	end)
 
 	local BOOTYBAY_RATCHET_BOAT = string.format(X_Y_BOAT, BZ["Booty Bay"], BZ["Ratchet"])
@@ -3560,12 +3565,12 @@ do
 				if name then
 					if fileName then
 						doneZones[name] = true
-			
+
 						if fileName == "EversongWoods" or fileName == "Ghostlands" or fileName == "Sunwell" or fileName == "SilvermoonCity" then
 							scrollX = scrollX - 0.00168
 							scrollY = scrollY + 0.01
 						end
-			
+
 						if zones[name] then
 							zones[name].yards = texX * continentYards
 							zones[name].x_offset = scrollX * continentYards
@@ -3580,7 +3585,7 @@ do
 					end
 				else
 					-- UpdateMapHighlight did not return anything
-					-- See hack, above					
+					-- See hack, above
 					trace("! Tourist: Highlight not found for "..tostring(continentName).."["..tostring(_).."] = "..tostring(zoneNames[_]))
 				end
 			end

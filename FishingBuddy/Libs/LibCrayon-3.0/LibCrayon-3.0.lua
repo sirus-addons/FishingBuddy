@@ -188,6 +188,7 @@ end
 
 function Crayon:HSLtoRGB(hue, saturation, luminance)
 	local red, green, blue
+	local var1, var2, var3
 
 	if saturation == 0 then
 		red, green, blue = luminance, luminance, luminance

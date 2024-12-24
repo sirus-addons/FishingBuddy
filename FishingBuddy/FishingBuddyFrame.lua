@@ -61,7 +61,7 @@ local function UpdateTabFrame(tab)
       lastTabFrame = tab;
    else
       if ( tab == currentTab ) then
-         currentTab = lastFrame;
+         currentTab = lastTabFrame;
       end
       tab:Hide();
    end
@@ -122,7 +122,7 @@ end
 FishingBuddy.EnableSubFrame = EnableSubFrame;
 
 local function AssignTabFrame(tabframe, target, id)
-   local frame, frameName = GetFrameInfo(target);   
+   local frame, frameName = GetFrameInfo(target);
    ManagedFrames[frameName] = tabframe;
    tabframe:SetFrameLevel(frame:GetFrameLevel()+1);
    tabframe.managedFrame = frame;
@@ -133,7 +133,7 @@ local function AssignTabFrame(tabframe, target, id)
 end
 
 local function IsAssigned(target)
-   local frame, frameName = GetFrameInfo(target);   
+   local frame, frameName = GetFrameInfo(target);
    return (ManagedFrames[frameName] ~= nil);
 end
 
@@ -207,13 +207,13 @@ function ToggleFishingBuddyFrame(target)
       currentTab = tab;
       if ( FishingBuddyFrame:IsVisible() ) then
          if ( frame:IsVisible() ) then
-            HideUIPanel(FishingBuddyFrame);        
+            HideUIPanel(FishingBuddyFrame);
          end
       else
          ShowUIPanel(FishingBuddyFrame);
       end
       ResetTabFrames();
-   end   
+   end
 end
 
 function FishingBuddyFrameTab_OnClick(self)
@@ -224,9 +224,9 @@ end
 
 function FishingBuddyFrame_OnLoad(self)
    -- Act like Blizzard windows
-   UIPanelWindows["FishingBuddyFrame"] = { area = "left", pushable = 999 }; 
+   UIPanelWindows["FishingBuddyFrame"] = { area = "left", pushable = 999 };
    -- Close with escape key
-   tinsert(UISpecialFrames, "FishingBuddyFrame"); 
+   tinsert(UISpecialFrames, "FishingBuddyFrame");
 
    FishingBuddyFramePortrait:SetTexture("Interface\\LootFrame\\FishingLoot-Icon");
    FishingBuddyNameText:SetText(FBConstants.WINDOW_TITLE);

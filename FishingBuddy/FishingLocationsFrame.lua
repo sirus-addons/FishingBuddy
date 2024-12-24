@@ -326,7 +326,7 @@ local function UpdateLocLine(id, line, leveloffset, c, e, text, texture)
       locHilite:SetTexture("");
       -- Place the highlight and lock the highlight state
       if ( LocationLineSelected == line ) then
-         FishingLocationHighlightFrame:SetPoint("TOPLEFT", locbutton,
+         FishingLocationHighlightFrame:SetPoint("TOPLEFT", locButton,
                                                 "TOPLEFT", 21, 0);
          FishingLocationHighlightFrame:Show();
          locButton:LockHighlight();
@@ -498,7 +498,7 @@ FishingBuddy.Locations.Update = function(self, forced)
                      if ( BL[zone] ) then
                         text = BZ[zone];
                      end
-                     tinsert(locButton.tooltip, loczone);
+                     tinsert(locButton.tooltip, zone);
                      local subsorted = FishingBuddy.SortedByZone[zone] or {};
                      local subcount = table.getn(subsorted);
                      local ins = {};
@@ -623,7 +623,7 @@ FishingBuddy.Locations.Button_OnClick = function(self, button, down)
 end
 
 function FishingLocationsCollapseAllButton_OnClick()
-   if ( Collpased == 0 ) then
+   if ( Collapsed == 0 ) then
       FishingLocsScrollFrameScrollBar:SetValue(0);
       LocationLineSelected = 1;
    end

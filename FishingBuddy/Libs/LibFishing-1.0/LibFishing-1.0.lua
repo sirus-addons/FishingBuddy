@@ -97,7 +97,7 @@ end
 
 local function FixupBindings(source, target)
    local translation = source["enUS"];
-   for tag,str in pairs(translation) do      
+   for tag,str in pairs(translation) do
       if ( string.find(tag, "^BINDING") ) then
          setglobal(tag, target[tag]);
          target[tag] = nil;
@@ -202,7 +202,7 @@ function FishLib:GetPoleType()
          _,_,_,_,fp_itemtype,fp_subtype,_,_,_,_ = self:GetItemInfo(6256);
       end
    end
-   return fp_itemtype, fp_subtupe;
+   return fp_itemtype, fp_subtype;
 end
 
 function FishLib:IsFishingPool(text)
@@ -302,7 +302,7 @@ end
 
 function FishLib:GetTooltipText()
    if ( GameTooltip:IsVisible() ) then
-      local text = getglobal("GameTooltipTextLeft1");
+      local text = _G["GameTooltipTextLeft1"];
       if ( text ) then
          return text:GetText();
       end
@@ -573,7 +573,6 @@ local function AddTooltipLine(l)
 end
 
 function FishLib:AddTooltip(text)
-   local c = color or {{}, {}};
    if ( text ) then
       if ( type(text) == "table" ) then
          for _,l in pairs(text) do
@@ -591,7 +590,7 @@ function FishLib:FindChatWindow(name)
    for i = 1, NUM_CHAT_WINDOWS do
       local tab = getglobal("ChatFrame" .. i .. "Tab");
       if (tab:GetText() == name) then
-         return getglobal("ChatFrame" .. i), frametab;
+         return getglobal("ChatFrame" .. i), tab;
       end
    end
    -- return nil, nil;
@@ -600,8 +599,8 @@ end
 function FishLib:GetChatWindow(name)
    local frame, frametab = self:FindChatWindow(name);
    if ( frame ) then
-      if( not frametab:IsVisible() ) then 
-         frametab:Show(); 
+      if( not frametab:IsVisible() ) then
+         frametab:Show();
       end
       return frame, frametab;
    else
