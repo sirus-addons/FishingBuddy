@@ -52,7 +52,7 @@ local function AddFishingSchool(kind, fishid, zidx, x, y)
       -- how do we find the same pool?
       local C, Z, x, y = Astrolabe:GetCurrentPlayerPosition();
       for _,hole in pairs(FishingBuddy_Info["FishSchools"][zidx]) do
-         local d,_,_ = Astrolabe:ComputeDistance(C, Z, x, x, C, Z, hole.x, hole.y);
+         local d,_,_ = Astrolabe:ComputeDistance(C, Z, x, y, C, Z, hole.x, hole.y);
          if ( d < CLOSEENOUGH ) then
             if ( fishid ) then
                if ( hole.count ) then

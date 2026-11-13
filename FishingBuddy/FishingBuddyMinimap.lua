@@ -31,10 +31,11 @@ end
 local function BeingDragged()
    -- Thanks to Gello for this code
    local xpos,ypos = GetCursorPosition();
-   local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom();
+   local xmid,ymid = Minimap:GetCenter();
+   local scale = Minimap:GetEffectiveScale();
 
-   xpos = xmin-xpos/UIParent:GetScale()+80;
-   ypos = ypos/UIParent:GetScale()-ymin-80;
+   xpos = xmid-xpos/scale;
+   ypos = ypos/scale-ymid;
 
    local ang = math.deg(math.atan2(ypos,xpos));
    if ( ang < 0 ) then
@@ -57,14 +58,19 @@ FishingBuddyMinimapButton_MoveButton = function()
       local where = FishingBuddy.GetSetting("MinimapButtonPosition");
       local radius = FishingBuddy.GetSetting("MinimapButtonRadius");
       FishingBuddyMinimapFrame:ClearAllPoints();
-      FishingBuddyMinimapFrame:SetPoint("TOPLEFT", "Minimap", "TOPLEFT",
-					 52 - (radius * cos(where)),
-					 (radius * sin(where)) - 52);
+      FishingBuddyMinimapFrame:SetPoint("CENTER", "Minimap", "CENTER",
+					 -(radius * cos(where)),
+					 radius * sin(where));
    end
 end
 
 local function UpdateMinimap()
    FishingBuddyMinimapButton_MoveButton();
+   local always = FishingBuddy.GetSettingBool("MinimapButtonAlways");
+   FishingBuddyMinimapFrame.sexyMapIgnore = always;
+   if ( always and SexyMap and SexyMap.UnregisterHoverButton ) then
+      SexyMap:UnregisterHoverButton(FishingBuddyMinimapFrame);
+   end
    if ( FishingBuddy.GetSettingBool("MinimapButtonVisible") and
         Minimap:IsVisible() ) then
       FishingBuddyMinimapButton:EnableMouse(true);
@@ -97,19 +103,15 @@ FishingBuddy.Minimap.Button_OnLeave = function(self)
    GameTooltip.fbmmbfinished = nil;
 end
 
-function FishingBuddy_ToggleMinimap()
-   if ( FishingBuddy.SavedToggleMinimap ) then
-      FishingBuddy.SavedToggleMinimap();
-   end
-   UpdateMinimap();
-end
-
 FishingBuddy.Minimap.Menu_Initialize = function()
    FishingBuddy.MakeDropDown(FBConstants.CLICKTOSWITCH_ONOFF, "MinimapClickToSwitch");
 end
 
 local MinimapEvents = {};
-MinimapEvents["VARIABLES_LOADED"] = UpdateMinimap;
+MinimapEvents["VARIABLES_LOADED"] = function()
+   hooksecurefunc("ToggleMinimap", UpdateMinimap);
+   UpdateMinimap();
+end;
 
 MinimapEvents[FBConstants.OPT_UPDATE_EVT] = UpdateMinimap;
 

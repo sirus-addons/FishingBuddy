@@ -1,10 +1,10 @@
 ## Interface: 30300
 ## Title: Fishing Buddy
 ## Version: 0.9.8p1
-## Notes: |@Version: 2@|Help with fishing related tasks -- clothing, fish information, etc.
-## Notes-deDE: |@Version: 2@|Erleichtert das Angeln - Ausr\195\188stung und Fish-Infos
-## Notes-frFR: |@Version: 2@|Vous facilite la vie de pecheur. Informations sur les poissons, changement d'habits, etc.
-## Notes-esES: |@Version: 2@|Ayude con las tareas relacionadas pesca -- ropa, informaci\195\179n de los pescados
+## Notes: |@Version: 3@|Help with fishing related tasks -- clothing, fish information, etc.
+## Notes-deDE: |@Version: 3@|Erleichtert das Angeln - Ausr\195\188stung und Fish-Infos
+## Notes-frFR: |@Version: 3@|Vous facilite la vie de pecheur. Informations sur les poissons, changement d'habits, etc.
+## Notes-esES: |@Version: 3@|Ayude con las tareas relacionadas pesca -- ropa, informaci\195\179n de los pescados
 ## Author: Sutorix=AT=hotmail.com
 ## OptionalDeps: FB_Debugging, Outfitter, myAddOns, Titan, InfoBar
 ## SavedVariables: FishingBuddy_Info
@@ -12,6 +12,7 @@
 ## X-Date: July 21, 2005
 ## X-Help: FBConstants.HELPMSG
 localization.lua
+localization.ruRU.lua
 localization.de.lua
 localization.es.lua
 localization.fr.lua

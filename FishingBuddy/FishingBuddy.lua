@@ -131,6 +131,12 @@ local GeneralOptions = {
       ["tooltip"] = FBConstants.CONFIG_MINIMAPBUTTON_INFO,
       ["v"] = 1,
       ["default"] = 1, },
+   ["MinimapButtonAlways"] = {
+      ["text"] = FBConstants.CONFIG_MINIMAPBUTTONALWAYS_ONOFF,
+      ["tooltip"] = FBConstants.CONFIG_MINIMAPBUTTONALWAYS_INFO,
+      ["v"] = 1,
+      ["deps"] = { ["MinimapButtonVisible"] = "d", },
+      ["default"] = 0, },
    ["MinimapPosSlider"] = {
       ["tooltip"] = FBConstants.MINIMAPBUTTONPLACEMENTTOOLTIP,
       ["deps"] = { ["MinimapButtonVisible"] = "d", },
@@ -169,13 +175,6 @@ local CastingOptions = {
    ["AutoLoot"] = {
       ["text"] = FBConstants.CONFIG_AUTOLOOT_ONOFF,
       ["tooltip"] = FBConstants.CONFIG_AUTOLOOT_INFO,
-      ["v"] = 1,
-      ["m"] = 1,
-      ["deps"] = { ["EasyCast"] = "d" },
-      ["default"] = 0 },
-   ["UseAction"] = {
-      ["text"] = FBConstants.CONFIG_USEACTION_ONOFF,
-      ["tooltip"] = FBConstants.CONFIG_USEACTION_INFO,
       ["v"] = 1,
       ["m"] = 1,
       ["deps"] = { ["EasyCast"] = "d" },
@@ -316,8 +315,6 @@ end
 
 FishingBuddy.ByFishie = nil;
 FishingBuddy.SortedFishies = nil;
-
-FishingBuddy.SavedToggleMinimap = nil;
 
 FishingBuddy.StartedFishing = nil;
 
@@ -594,7 +591,7 @@ local function GetZoneIndex(zone, subzone, marker)
       zone, subzone = GetZoneInfo();
    end
    if ( zone and not BL[zone] ) then
-      zone = BZR[zone];
+      zone = BZR[zone] or zone;
    end
    if (not zone) then
       zone = UNKNOWN;
@@ -635,7 +632,7 @@ local function AddZoneIndex(zone, subzone, marker)
       loczone = BZ[zone];
    else
       loczone = zone;
-      zone = BZR[zone];
+      zone = BZR[zone] or zone;
    end
    if (not zone) then
       zone = UNKNOWN;
@@ -995,16 +992,9 @@ end
 
 local function InvokeFishing()
    local _, name = FL:GetFishingSkillInfo();
-   local findid = FL:GetFishingActionBarID();
-   if ( not FishingBuddy.GetSettingBool("UseAction") or findid == nil ) then
-     FB_FishingButton:SetAttribute("type", "spell");
-     FB_FishingButton:SetAttribute("spell", name);
-     FB_FishingButton:SetAttribute("action", nil);
-   else
-     FB_FishingButton:SetAttribute("type", "action");
-     FB_FishingButton:SetAttribute("action", findid);
-     FB_FishingButton:SetAttribute("spell", nil);
-   end
+   FB_FishingButton:SetAttribute("type", "spell");
+   FB_FishingButton:SetAttribute("spell", name);
+   FB_FishingButton:SetAttribute("action", nil);
    FB_FishingButton:SetAttribute("item", nil);
    FB_FishingButton:SetAttribute("target-slot", nil);
 end
@@ -1178,7 +1168,7 @@ CaptureEvents["LOOT_CLOSED"] = function()
    FL:ExtendDoubleClick();
 end
 
-StatusEvents = {};
+local StatusEvents = {};
 StatusEvents["SPELLS_CHANGED"] = function()
    -- Fishing might have moved, go look again
    FL:GetFishingSkillInfo(true);
@@ -1193,10 +1183,6 @@ StatusEvents["UNIT_SPELLCAST_START"] = function(arg1)
    if ( arg1 == "player" ) then
       Recasting = 0;
    end
-end
-
-StatusEvents["ACTIONBAR_SLOT_CHANGED"] = function()
-   FL:GetFishingActionBarID(true);
 end
 
 -- See if this fixes the "combat while fishing" bug
@@ -1259,10 +1245,7 @@ local function CentralCasting()
    end
    SetOverrideBindingClick(FB_FishingButton, true, "BUTTON2", "FB_FishingButton");
    OverrideOn = true;
-   lastClickTime = nil;
 end
-
-local SavedWFOnMouseDown;
 
 -- handle mouse up and mouse down in the WorldFrame so that we can steal
 -- the hardware events to implement 'Easy Cast'
@@ -1280,27 +1263,8 @@ local function WF_OnMouseDown(...)
          CentralCasting();
       end
    end
-   if ( SavedWFOnMouseDown ) then
-      SavedWFOnMouseDown(...);
-   end
 end
 
-local function SafeHookMethod(object, method, newmethod)
-   local oldValue = object[method];
-   if ( oldValue ~= getglobal(newmethod) ) then
-      object[method] = newmethod;
-      return true;
-   end
-   return false;
-end
-
-local function SafeHookScript(frame, handlername, newscript)
-   local oldValue = frame:GetScript(handlername);
-   frame:SetScript(handlername, newscript);
-   return oldValue;
-end
-
--- override the error message method (need an object as the first arg)
 local function UIError_AddMessage( o, msg, a, r, g, b, hold )
    if ( msg and FL:IsFishingPole() and FishingBuddy.GetSettingBool("EasyLures") ) then
       -- if the fish gets away, try adding a lure
@@ -1335,10 +1299,6 @@ local function UIError_AddMessage( o, msg, a, r, g, b, hold )
          end
       end
    end
-   --Call the original
-   local obj = SavedAddMessage.obj;
-   local method = SavedAddMessage.method;
-   return method( obj, msg, a, r, g, b, hold );
 end
 
 FishingBuddy.GetFishie = function(fishid)
@@ -1436,20 +1396,11 @@ FishingBuddy.IsSwitchClick = function(setting)
 end
 
 FishingBuddy.TrapUIErrors = function()
-   local temp = {};
-   temp.obj= UIErrorsFrame;
-   temp.method = UIErrorsFrame["AddMessage"];
-   if ( SafeHookMethod(UIErrorsFrame, "AddMessage", UIError_AddMessage) ) then
-      SavedAddMessage = temp;
-   end
+   hooksecurefunc(UIErrorsFrame, "AddMessage", UIError_AddMessage);
 end
 
 local function TrapWorldMouse()
-   if ( WorldFrame.OnMouseDown ) then
-      hooksecurefunc(WorldFrame, "OnMouseDown", WF_OnMouseDown)
-   else
-      SavedWFOnMouseDown = SafeHookScript(WorldFrame, "OnMouseDown", WF_OnMouseDown);
-   end
+   WorldFrame:HookScript("OnMouseDown", WF_OnMouseDown);
 end
 FishingBuddy.TrapWorldMouse = TrapWorldMouse;
 

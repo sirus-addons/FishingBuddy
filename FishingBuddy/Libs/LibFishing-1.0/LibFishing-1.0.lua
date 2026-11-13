@@ -5,7 +5,7 @@ Description: A library with common routines used by FishingBuddy and addons.
 --]]
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 3
+local MINOR_VERSION = 4
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -173,7 +173,7 @@ function FishLib:IsLinkableItem(item)
 end
 
 function FishLib:ChatLink(item, name, color)
-   if( item and name and ChatFrameEditBox:IsVisible() ) then
+   if( item and name and ChatEdit_GetActiveWindow() ) then
       if ( not color ) then
          color = Crayon.COLOR_HEX_WHITE;
       elseif ( Crayon["COLOR_HEX_"..color] ) then
@@ -183,7 +183,7 @@ function FishLib:ChatLink(item, name, color)
          color = "ff"..color;
       end
       local link = "|c"..color.."|Hitem:"..item.."|h["..name.."]|h|r";
-      ChatFrameEditBox:Insert(link);
+      ChatEdit_InsertLink(link);
    end
 end
 
@@ -397,7 +397,7 @@ function FishLib:GetFishingSkillInfo(force)
       self.SpellID = self:FindSpellID(FISHINGTEXTURE);
       self.SkillName = nil;
    end
-   if ( self.SpellID and not SkillName ) then
+   if ( self.SpellID and not self.SkillName ) then
       self.SkillName = GetSpellName(self.SpellID, BOOKTYPE_SPELL);
    end
    local sname = self.SkillName;
@@ -713,6 +713,18 @@ FLTrans:Setup("zhTW", "群",
    "純水", FishLib.SCHOOL_WATER,             --  Pure Water
    "蒸汽幫浦漂浮殘骸", FishLib.SCHOOL_FLOTSAM,  --  Steam Pump Flotsam
    "斑點可口魚魚群", FishLib.SCHOOL_TASTY); -- School of Tastyfish
+
+FLTrans:Setup("ruRU", "косяк",
+   "Плавающие обломки", FishLib.SCHOOL_WRECKAGE,
+   "Обломки в воде", FishLib.SCHOOL_WRECKAGE,
+   "Участок первородной воды", FishLib.SCHOOL_WATER,
+   "Плавающий мусор", FishLib.SCHOOL_DEBRIS,
+   "Нефтяное пятно", FishLib.SCHOOL_OIL,
+   "Стайка каменного угря", FishLib.SCHOOL_FISH,
+   "Грязный водоворот", FishLib.SCHOOL_CHURNING,
+   "Чистая вода", FishLib.SCHOOL_WATER,
+   "Обломки парового насоса", FishLib.SCHOOL_FLOTSAM,
+   "Косяк вкуснорыбы", FishLib.SCHOOL_TASTY);
 
 FishLib:Translate("LibFishing", FLTrans, FishLib);
 FLTrans = nil;
