@@ -6,7 +6,7 @@ FishingTranslations["ruRU"] = {
    
    -- we can (should?) translate everything below here
    DESCRIPTION1 = "Отслеживает какую рыбу и где вы поймали",
-   DESCRIPTION2 = "и помогает управлять вашим рыболовским снарежением.",
+   DESCRIPTION2 = "и помогает управлять вашим рыболовским снаряжением.",
 
    -- Tab labels and tooltips
    LOCATIONS_INFO = "Отображает, где вы поймали рыбу по зоне или типу рыбы",
@@ -29,7 +29,7 @@ FishingTranslations["ruRU"] = {
    FORCE = "force",
 
    OUTFITS = "Снаряжение",
-   ELAPSED = "Пройденно",
+   ELAPSED = "Прошло",
    TOTAL = "Всего",
    TOTALS = "Общее",
    
@@ -82,8 +82,8 @@ FishingTranslations["ruRU"] = {
    ALLZOMGPETS = "+ все питомцы",
 
    -- Option names and tooltips
-   CONFIG_SHOWNEWFISHIES_ONOFF   = "Новая рыбв",
-   CONFIG_SHOWNEWFISHIES_INFO    = "Выводит сообщение в окно чата, когда вы поймали новую рыбы в текущем месте.",
+   CONFIG_SHOWNEWFISHIES_ONOFF   = "Новая рыба",
+   CONFIG_SHOWNEWFISHIES_INFO    = "Выводит сообщение в окно чата, когда вы поймали новую рыбу в текущем месте.",
    CONFIG_FISHWATCH_ONOFF        = "Наблюдатель",
    CONFIG_FISHWATCH_INFO	 	 = "Отображать текстовый фрейм с информацией о пойманных рыбках в текущем месте.",
    CONFIG_FISHWATCHTIME_ONOFF    = "Сколько времени я рыбачу?",
@@ -100,8 +100,6 @@ FishingTranslations["ruRU"] = {
    CONFIG_EASYCAST_INFO		 = "Закидывать удочку по двойному-правому-клику.",
    CONFIG_AUTOLOOT_ONOFF	 = "Авто сбор",
    CONFIG_AUTOLOOT_INFO	     = "Автоматически собирать всю пойманную рыбу.",
-   CONFIG_USEACTION_ONOFF	 = "Действия",
-   CONFIG_USEACTION_INFO	 = "#NAME# будет пытаться использовать кнопку на панели для рыбалки.",
    CONFIG_EASYLURES_ONOFF	 = "Авто-наживка",
    CONFIG_EASYLURES_INFO	 = "Наживка будет автоматически применяться к вашей удочке, если это необходимо, конечно.",
    CONFIG_ALWAYSLURE_ONOFF   = "Всегда наживлять",
@@ -110,10 +108,16 @@ FishingTranslations["ruRU"] = {
    CONFIG_SHOWLOCATIONZONES_INFO	= "Показывать зоны и подзоны.",
    CONFIG_SORTBYPERCENT_ONOFF = "Сорт по улову",
    CONFIG_SORTBYPERCENT_INFO  = "Упорядочить информацию об улове по его количеству, а не по алфавиту.",
+   CONFIG_CONTESTS_ONOFF     = "Поддержка рыболовных состязаний",
+   CONFIG_CONTESTS_INFO      = "Показывать таймеры рыболовных состязаний.",
    CONFIG_STVTIMER_ONOFF     = "Таймер Рыбомания",
    CONFIG_STVTIMER_INFO	     = "Показывать время, оставшееся до старта Рыбомании или время, оставшееся до его завершения.",
    CONFIG_STVPOOLSONLY_ONOFF = "Забрасывать только в водоёмы",
    CONFIG_STVPOOLSONLY_INFO	 = "Простая ловля будет применяться только тогда, когда курсор находится над водоёмом.",
+   CONFIG_DERBYTIMER_ONOFF   = "Таймер состязания калу'аков",
+   CONFIG_DERBYTIMER_INFO	 = "Показывать время, оставшееся до старта рыболовного состязания калу'аков или до его завершения.",
+   CONFIG_SHOWPOOLS_ONOFF    = "Показывать водоёмы",
+   CONFIG_SHOWPOOLS_INFO     = "Показывать известные водоёмы на миникарте.",
    CONFIG_TOOLTIPS_ONOFF     = "Информация о рыбе в подсказках",
    CONFIG_TOOLTIPS_INFO      = "Показывать информацию о выловленной рыбе в подсказках предметов.",
    CONFIG_ONLYMINE_ONOFF     = "Одеть только удочку",
@@ -121,7 +125,7 @@ FishingTranslations["ruRU"] = {
    CONFIG_TURNOFFPVP_ONOFF   = "Отключить ПвП",
    CONFIG_TURNOFFPVP_INFO    = "Если у вас одета удочка, возможности PVP отключается.",
    CONFIG_BGSOUNDS_ONOFF     = "Фоновой звук",
-   CONFIG_BGSOUNDS_INFO      = "Включение фонового звука, вто время как WoW свёрнут.",
+   CONFIG_BGSOUNDS_INFO      = "Включение фонового звука, в то время как WoW свёрнут.",
    
    CONFIG_FISHINGFLUFF_ONOFF = "Fishing Fun",
    CONFIG_FISHINGFLUFF_INFO  = "Enable all sorts of fun while you fish",
@@ -133,11 +137,11 @@ FishingTranslations["ruRU"] = {
    CONFIG_FISHINGBUDDY_INFO  = "Bring out that special buddy while you fish.",
    
    CONFIG_WATCHBOBBER_ONOFF  = "Следить за поплавком",
-   CONFIG_WATCHBOBBER_INFO   = "Если включено, #NAME# не будет забрасывать попловок водоём, если курсор мыши наведен/зависает над поплавком.",
+   CONFIG_WATCHBOBBER_INFO   = "Если включено, #NAME# не будет забрасывать поплавок в водоём, если курсор мыши наведен/зависает над поплавком.",
    
-   CONFIG_OUTFITTER_TEXT     = "Бонус от снарежения: %s\r\nСчет (в стиле Draznar'а): %d ",
+   CONFIG_OUTFITTER_TEXT     = "Бонус от снаряжения: %s\r\nСчет (в стиле Draznar'а): %d ",
 
-   CLICKTOSWITCH_ONOFF	        = "Клик для смени набора",
+   CLICKTOSWITCH_ONOFF	        = "Клик для смены набора",
    CLICKTOSWITCH_INFO	        = "Левый клик будет переключать выбранный набор экипировки, вместо того, чтобы открывать главное окно #NAME#.",
 
    LEFTCLICKTODRAG = "[Левый-клик] - перемещение",
@@ -147,9 +151,11 @@ FishingTranslations["ruRU"] = {
    MINIMAPBUTTONPLACEMENT = "Размещение",
    MINIMAPBUTTONPLACEMENTTOOLTIP = "Позволяет перемещать иконку #NAME# у мини-карты",
    MINIMAPBUTTONRADIUS = "Расстояние",
-   MINIMAPBUTTONRADIUSTOOLTIP = "Определяет как долеко может быть расположена иконка #NAME# у мини-карты",
-   CONFIG_MINIMAPBUTTON_ONOFF	= "Иконка у мини карты",
-   CONFIG_MINIMAPBUTTON_INFO	= "Показывать иконку #NAME# у мини карте.",
+   MINIMAPBUTTONRADIUSTOOLTIP = "Определяет как далеко может быть расположена иконка #NAME# у мини-карты",
+   CONFIG_MINIMAPBUTTON_ONOFF	= "Иконка у мини-карты",
+   CONFIG_MINIMAPBUTTON_INFO	= "Показывать иконку #NAME# у мини-карты.",
+   CONFIG_MINIMAPBUTTONALWAYS_ONOFF	= "Иконка всегда видна",
+   CONFIG_MINIMAPBUTTONALWAYS_INFO	= "Не прятать иконку #NAME#, даже если аддон мини-карты (например, SexyMap) показывает кнопки только при наведении мыши на карту.",
 
    CONFIG_ENHANCESOUNDS_ONOFF      = "Повысить громкость",
    CONFIG_ENHANCESOUNDS_INFO       = "Во время рыбалки, #NAME# увеличит громкость звука до максимума и уменьшит громкость звука окружающей среды до минимума.",
@@ -179,15 +185,18 @@ FishingTranslations["ruRU"] = {
 
    DASH = " -- ",
    FISHCAUGHT = "%d %s",
-   TIMETOGO = "Начало Рыбомании через %d:%02d",
-   TIMELEFT = "Конец Рыбомании через %d:%02d",
-   FATLADYSINGS = "|c#RED#Окончание Рыбомании|r (осталось %d:%02d)",
+   EXTRAVAGANZA = "Рыбомания",
+   DERBY = "Состязание калу'аков",
+
+   TIMETOGO = "%s: начало через %d:%02d",
+   TIMELEFT = "%s: конец через %d:%02d",
+   FATLADYSINGS = "|c#RED#%s: окончание|r (осталось %d:%02d)",
    
-   RIGGLE_BASSBAIT = "^Риггл Мормыш кричит: У нас есть победитель!s+(%a+)s+Лучший удильщик!",
+   RIGGLE_BASSBAIT = "^Риггл Мормыш кричит: У нас есть победитель!%s+(%a+)%s+Лучший удильщик!",
 
    STVZONENAME = "Тернистая долина",
 
-   TOOLTIP_HINT = "Cовет:",
+   TOOLTIP_HINT = "Совет:",
    TOOLTIP_HINTSWITCH = "кликните, чтобы переключить набор снаряжения",
    TOOLTIP_HINTTOGGLE = "кликните, чтобы открыть окно #NAME#.",
 
@@ -203,7 +212,7 @@ FishingTranslations["ruRU"] = {
 
 FishingTranslations["ruRU"].SWITCH_HELP = {
       "|c#GREEN#/fb #SWITCH#|r",
-      "    переключение между набора снаряжения (если доступны OutfitDisplayFrame или Outfitter)",
+      "    переключение между наборами снаряжения (если доступны OutfitDisplayFrame или Outfitter)",
 };
 FishingTranslations["ruRU"].WATCHER_HELP = {
       "|c#GREEN#/fb #WATCHER#|r [|c#GREEN##WATCHER_LOCK#|r or |c#GREEN##WATCHER_UNLOCK#|r or |c#GREEN##RESET#|r]",
@@ -218,7 +227,7 @@ FishingTranslations["ruRU"].UPDATEDB_HELP = {
    "|c#GREEN#/fb #UPDATEDB# [#FORCE#]|r",
    "    Попробовать найти названия рыб, которые ещё не известны #NAME#.",
    "    Во время поиска не проверяются 'редкие' рыбы, которые могут",
-   "    привести к отключения от сервера -- используйте опцию '#FORCE#' для их принудительной проверки.",
+   "    привести к отключению от сервера -- используйте опцию '#FORCE#' для их принудительной проверки.",
 };
 FishingTranslations["ruRU"].CLEANUP_HELP = {
       "|c#GREEN#/fb #CLEANUP#|r [|c#GREEN##CHECK#|r or |c#GREEN##NOW#|r]",

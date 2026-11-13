@@ -104,8 +104,6 @@ FishingTranslations["enUS"] = {
    CONFIG_EASYCAST_INFO		 = "Enable double-right-click casting.",
    CONFIG_AUTOLOOT_ONOFF	 = "Auto Loot",
    CONFIG_AUTOLOOT_INFO	     = "If enabled, automatic looting is turned on while fishing.",
-   CONFIG_USEACTION_ONOFF	 = "Use Action",
-   CONFIG_USEACTION_INFO	 = "If enabled, #NAME# will look for an action bar button to use for casting.",
    CONFIG_EASYLURES_ONOFF	 = "Easy Lures",
    CONFIG_EASYLURES_INFO	 = "If enabled, a lure will applied to your fishing pole before you start fishing, whenever you need one.",
    CONFIG_ALWAYSLURE_ONOFF   = "Always Lure",
@@ -162,6 +160,8 @@ FishingTranslations["enUS"] = {
    MINIMAPBUTTONRADIUSTOOLTIP = "Determines how far from the minimap the #NAME# icon should be",
    CONFIG_MINIMAPBUTTON_ONOFF	= "Display minimap icon",
    CONFIG_MINIMAPBUTTON_INFO	= "Display a #NAME# icon on the minimap.",
+   CONFIG_MINIMAPBUTTONALWAYS_ONOFF	= "Always show minimap icon",
+   CONFIG_MINIMAPBUTTONALWAYS_INFO	= "Keep the #NAME# icon visible even if a minimap addon such as SexyMap hides minimap buttons until the mouse is over the minimap.",
 
    CONFIG_ENHANCESOUNDS_ONOFF      = "Enhance fishing sounds",
    CONFIG_ENHANCESOUNDS_INFO       = "When enabled, maximize sound volume and minimize ambient volume to make the bobber noise more noticeable while fishing.",
@@ -198,9 +198,9 @@ FishingTranslations["enUS"] = {
    TIMETOGO = "%s starts in %d:%02d",
    TIMELEFT = "%s ends in %d:%02d",
    
-   FATLADYSINGS = "|c#RED#Extravaganza is over|r (%d:%02d left)",
+   FATLADYSINGS = "|c#RED#%s is over|r (%d:%02d left)",
    -- Figgle Bassbait yells: We have a winner! NAME is the Master Angler!
-   RIGGLE_BASSBAIT = "^Riggle Bassbait yells: We have a winner!\s+(%a+)\s+is the Master Angler!",
+   RIGGLE_BASSBAIT = "^Riggle Bassbait yells: We have a winner!%s+(%a+)%s+is the Master Angler!",
 
    STVZONENAME = "Stranglethorn Vale",
 

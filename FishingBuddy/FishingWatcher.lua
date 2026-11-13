@@ -272,39 +272,6 @@ WatchEvents[FBConstants.LEAVING_EVT] = function()
    FishingBuddy.SetSetting("TotalTimeFishing", TotalTimeFishing + ZoneFishingTime);
 end
 
-local function UpdateUnknownZones(zone, subzone)
-   if ( FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN] ) then
-      if ( FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] ) then
-        if ( not FishingBuddy_Info["FishingHoles"][zone] ) then
-           FishingBuddy_Info["FishingHoles"][zone] = { };
-           tinsert(FishingBuddy.SortedZones, zone);
-           table.sort(FishingBuddy.SortedZones);
-        end
-        if ( not FishingBuddy_Info["FishingHoles"][zone][subzone] ) then
-           FishingBuddy_Info["FishingHoles"][zone][subzone] = { };
-        end
-        for k,v in FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] do
-           FishingBuddy_Info["FishingHoles"][zone][subzone][k] = v;
-        end
-        FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN][subzone] = nil;
-     end
-     FishingBuddy.Locations.DataChanged(zone, subzone);
-      -- Duh, table.getn doesn't work because there aren't any integer
-      -- keys in this table
-      if ( next(FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN]) == nil ) then
-        FishingBuddy_Info["FishingHoles"][FishingBuddy.UNKNOWN] = nil;
-        local pos;
-        while ( pos < table.getn(FishingBuddy.SortedZones) ) do
-           if ( FishingBuddy.SortedZones[pos] == FishingBuddy.UNKNOWN ) then
-              break;
-           end
-           pos = pos + 1;
-        end
-        tremove(FishingBuddy.SortedZones, pos);
-     end
-  end
-end
-
 local function Fix0(i)
    if ( i < 10 ) then
       return "0"..i;
@@ -363,8 +330,6 @@ local function WatchUpdate(justTime)
    end
 
    local zidx, sidx = FishingBuddy.AddZoneIndex(zone, subzone);
-
-   UpdateUnknownZones(zone, subzone);
 
    if ( noshow ) then
       HideDraggerFrame();
@@ -583,6 +548,7 @@ local function WatchUpdate(justTime)
    FishingWatchFrame:SetHeight((index - 1) * 13);
    FishingWatchFrame:SetWidth(fishingWatchMaxWidth + 10);
    SizeDraggerFrame();
+   fishshown = true;
 end
 FishingBuddy.WatchUpdate = WatchUpdate;
 
