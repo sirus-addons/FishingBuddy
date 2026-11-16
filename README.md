@@ -5,3 +5,12 @@
 1) ведет статистику всей выловленной рыбы по типам и локациям, показывая улов в процентном и количественном соотношении;
 2) отображает текущий навык рыбной ловли, место лова, время, потраченное на рыбалку в данной сессии и за весь период работы аддона;
 3) показывает необходимый навык рыбалки для ловли в данной локации и текущий навык персонажа в процентах от необходимого.
+
+**Скриншоты:**
+
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/1.webp)
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/2.webp)
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/3.webp)
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/4.webp)
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/5.webp)
+![](https://raw.githubusercontent.com/sirus-addons/FishingBuddy/master/.screenshots/6.webp)
