@@ -186,9 +186,7 @@ local function OutfitPoints(outfit)
    return bp, sp;
 end
 
-local Saved_GearSetButton_OnEnter = GearSetButton_OnEnter;
 local function Patch_GearSetButton_OnEnter(self)
-   Saved_GearSetButton_OnEnter(self);
    local _, name = FL:GetFishingSkillInfo();
    if ( self.name and self.name == name ) then
       local bp, sp = OutfitPoints(name)
@@ -209,8 +207,7 @@ local function Patch_GearSetButton_OnEnter(self)
       GameTooltip:Show();
    end
 end
--- point to our new function so we get our own tooltip
-GearSetButton_OnEnter = Patch_GearSetButton_OnEnter;
+hooksecurefunc("GearSetButton_OnEnter", Patch_GearSetButton_OnEnter);
 
 FishingBuddy.OutfitManager.RegisterManager(EQUIPMENT_MANAGER,
                                               GearManagerInitialize,

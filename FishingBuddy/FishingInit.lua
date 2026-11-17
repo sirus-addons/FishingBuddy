@@ -378,16 +378,6 @@ FishingBuddy.GetLastVersion = function()
    return lastVersion;
 end
 
--- Based on code in QuickMountEquip
-FishingInit.HookFunction = function(func, newfunc)
-   local oldValue = getglobal(func);
-   if ( oldValue ~= getglobal(newfunc) ) then
-      setglobal(func, getglobal(newfunc));
-      return true;
-   end
-   return false;
-end
-
 -- set up alternate view of fish data. do this as startup to
 -- lower overall dynamic hit when loading the window
 FishingInit.SetupByFishie = function()
@@ -497,10 +487,6 @@ FishingInit.RegisterMyAddOn = function()
 end
 
 FishingInit.RegisterFunctionTraps = function()
-   local temp = ToggleMinimap;
-   if ( FishingInit.HookFunction("ToggleMinimap", "FishingBuddy_ToggleMinimap") ) then
-      FishingBuddy.SavedToggleMinimap = temp;
-   end
    FishingBuddy.TrapWorldMouse();
    FishingBuddy.TrapUIErrors();
 end

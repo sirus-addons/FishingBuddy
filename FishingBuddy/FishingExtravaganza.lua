@@ -215,18 +215,16 @@ end
 local function IsTime(activate)
    CurrentContest = nil;
    if ( FishingBuddy.IsLoaded() ) then
-      if ( GetSettingBool("STVTimer") ) then
-         local hour,minute = GetGameTime();
-         local weekday, _, _, _ = CalendarGetDate();
-         for idx=1,#Contests do
-            local c = Contests[idx];
-            if ( GetSettingBool(c.setting) ) then
-               if ( weekday == c.day ) then
-                  local s = c.hour - 2;
-                  local e = c.hour + c.dur;
-                  if ( hour >= s and hour <= e ) then
-                     CurrentContest = c;
-                  end
+      local hour,minute = GetGameTime();
+      local weekday, _, _, _ = CalendarGetDate();
+      for idx=1,#Contests do
+         local c = Contests[idx];
+         if ( GetSettingBool(c.setting) ) then
+            if ( weekday == c.day ) then
+               local s = c.hour - 2;
+               local e = c.hour + c.dur;
+               if ( hour >= s and hour <= e ) then
+                  CurrentContest = c;
                end
             end
          end

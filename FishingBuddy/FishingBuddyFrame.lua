@@ -17,6 +17,7 @@ local FBFRAMES = {
 
 local FirstAmongTabs;
 local UltimateTab;
+local currentTab;
 
 local function GetFrameInfo(f)
    local n;
@@ -169,7 +170,7 @@ end
 
 local function FindTab(frame)
    for id=1,next_frameid-1 do
-      tab = TabFrames[id];
+      local tab = TabFrames[id];
       if ( tab.managedFrame == frame ) then
          return tab;
       end

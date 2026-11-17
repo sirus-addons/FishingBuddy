@@ -8,7 +8,7 @@ FBConstants = {};
 
 FBConstants.CURRENTVERSION = 9817;
 FBConstants.DEFAULT_MINIMAP_POSITION = 256;
-FBConstants.DEFAULT_MINIMAP_RADIUS = 80;
+FBConstants.DEFAULT_MINIMAP_RADIUS = Minimap:GetWidth()/2 + 10;
 
 -- don't override debugging code, if it loaded
 if ( not FishingBuddy ) then
